@@ -22,11 +22,3 @@ foreach ( $users as $user ) {
     var_dump($assignedTasks);
     echo('<br>-------------------------------------------------------------------------------<br>');
 }
-
-echo 'Assign and execute task to user william.jobs<br>';
-$williamJobs = $bonitaUser->getByUserName('william.jobs');
-$bonitaTask = new BonitaHumanTask();
-$williamTask = $bonitaTask->getPendingTasks($williamJobs->id);
-$bonitaTask->assignTaskToUser($williamTask[0]->id, $williamJobs->id);
-$bonitaTask->executeTask($williamTask[0]->id, $williamJobs->id, array(array('name' => 'aprovado', 'type' => 'bool', 'value' => 'true'), array('name' => 'obs', 'type' => 'string', 'value' => 'teste')));
-echo('<br>-------------------------------------------------------------------------------<br>');
