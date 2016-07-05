@@ -22,12 +22,14 @@ class BonitaCase extends BonitaRestAPI {
         return parent::get();
     }
     
-    public function createCase($processId) {
-        return parent::post(array('processDefinitionId' => "{$processId}"));
-    }
-    
-    public function updateCaseVariable($caseId, $variableName, $variableType, $variableValue) {
-        parent::put("{$caseId}/{$variableName}", $data);
+    public function createCase($processId, $userId) {
+        if (is_null($processId)) {
+            throw new Exception('You must inform the process id to start a case.');
+        }
+        if (is_null($userId)) {
+            throw new Exception('You must inform the user id to start a case.');
+        }
+        return parent::post(array('processDefinitionId' => "{$processId}", 'startedBySubstitute' => "{$userId}"));
     }
     
 }

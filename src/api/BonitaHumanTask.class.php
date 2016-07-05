@@ -86,6 +86,7 @@ class BonitaHumanTask extends BonitaRestAPI {
      * @return boolean Return if the task was executed
      */
     public function executeTask($taskId, $userId, $variables = NULL) {
+        $execute = FALSE;
         if ( !$this->isTaskAssignedToUser($taskId, $userId) ) {
             throw new Exception("The task '{$taskId}' is not assigned to the user '{$userId}'");
         } else {
@@ -100,10 +101,9 @@ class BonitaHumanTask extends BonitaRestAPI {
             }
             
             // Call PUT method to execute task.
-            parent::put($taskId, array('state' => BonitaRestAPI::STATE_COMPLETED, 'executedBySubstitute' => "{$userId}"));
+            $execute = parent::put($taskId, array('state' => BonitaRestAPI::STATE_COMPLETED, 'executedBySubstitute' => "{$userId}"));
         }
-        
-        return true;
+        return $execute;
     }
 
     /**

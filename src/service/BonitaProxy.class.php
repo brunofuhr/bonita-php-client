@@ -19,9 +19,9 @@ class BonitaProxy {
     
     /**
      * 
-     * @param type $url
-     * @param type $userName
-     * @param type $password
+     * @param String $url
+     * @param String $userName
+     * @param String $password
      */
     public function __construct($url, $userName, $password) {
         $this->setBonitaURL($url);
@@ -85,7 +85,7 @@ class BonitaProxy {
         }
 
         $data = json_encode($post_array);
-        var_dump($data);
+        
         curl_setopt($curlHandler, CURLOPT_URL, $routeCURL);
         curl_setopt($curlHandler, CURLOPT_CUSTOMREQUEST, "PUT");
         curl_setopt($curlHandler, CURLOPT_POSTFIELDS, $data);
