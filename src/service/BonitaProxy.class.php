@@ -99,6 +99,29 @@ class BonitaProxy {
         curl_close($curlHandler);
         return $response;
     }
+    
+    public function executeCURLDELETEaction($routeCURL, $post_array, $login = true) {
+        $curlHandler = curl_init($routeCURL);
+
+        if ($login) {
+            $this->commonAuthenticate($curlHandler);
+        }
+
+        $data = json_encode($post_array);
+        
+        curl_setopt($curlHandler, CURLOPT_URL, $routeCURL);
+        curl_setopt($curlHandler, CURLOPT_CUSTOMREQUEST, "DELETE");
+        curl_setopt($curlHandler, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($curlHandler, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curlHandler, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json',
+            'Content-Length: ' . strlen($data))
+        );
+        $response = curl_exec($curlHandler);
+
+        curl_close($curlHandler);
+        return $response;
+    }
 
     protected function prepareCURLFieldString($fields) {
         $urlifyedFields = "";

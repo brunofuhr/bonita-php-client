@@ -27,7 +27,7 @@ class BonitaRestAPI {
         $this->filters = $filters;
     }
 
-    public function get($id = NULL) {
+    protected function get($id = NULL) {
         $proxy = new BonitaProxy(BONITA_SERVER_URL, BONITA_USERNAME, BONITA_PASSWORD);
         $endpoint = $this->getEndpoint();
         
@@ -43,17 +43,24 @@ class BonitaRestAPI {
         return json_decode($proxy->executeCURLGETaction($endpoint));
     }
     
-    public function put($id, $data) {
+    protected function put($id, $data) {
         $proxy = new BonitaProxy(BONITA_SERVER_URL, BONITA_USERNAME, BONITA_PASSWORD);
         $endpoint = $this->getEndpoint();
         $endpoint .= "/{$id}";
-        return $proxy->executeCURLPUTaction($endpoint, $data);
+        return json_decode($proxy->executeCURLPUTaction($endpoint, $data));
     }
     
-    public function post($data) {
+    protected function delete($id) {
         $proxy = new BonitaProxy(BONITA_SERVER_URL, BONITA_USERNAME, BONITA_PASSWORD);
         $endpoint = $this->getEndpoint();
-        return $proxy->executeCURLPOSTaction($endpoint, $data);
+        $endpoint .= "/{$id}";
+        return json_decode($proxy->executeCURLDELETEaction($endpoint, $data));
+    }
+    
+    protected function post($data) {
+        $proxy = new BonitaProxy(BONITA_SERVER_URL, BONITA_USERNAME, BONITA_PASSWORD);
+        $endpoint = $this->getEndpoint();
+        return json_decode($proxy->executeCURLPOSTaction($endpoint, $data));
     }
     
     private function parseFilters() {

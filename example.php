@@ -3,8 +3,29 @@
 require_once 'src/autoload.php';
 
 $bonitaUser = new BonitaUser();
+$bonitaProcess = new BonitaProcess();
+$bonitaCase = new BonitaCase();
+$bonitaRole = new BonitaRole();
+$bonitaGroup = new BonitaGroup();
+$bonitaMembership = new BonitaMembership();
+
+$username = 'bruno.fuhr';
+$user = $bonitaUser->getByUserName($username);
 
 echo '<pre>';
+//var_dump($bonitaMembership->getUserMemberships($user->id));
+//var_dump($bonitaGroup->getGroup(14));
+//var_dump($bonitaRole->getRole(2));
+
+// CREATE USER
+//$user = $bonitaUser->create('bruno.fuhr', '123', 'Bruno', 'Fuhr');
+var_dump($user);
+//var_dump($bonitaMembership->assignMembership($user->id, 14, 2));
+var_dump($bonitaMembership->getUserMemberships($user->id));
+
+
+// DELETE USER
+//var_dump($bonitaUser->delete(107));
 
 // Listar tarefas dos usuários
 //$users = $bonitaUser->getUsersList();
@@ -23,19 +44,18 @@ echo '<pre>';
 //    echo('<br>-------------------------------------------------------------------------------<br>');
 //}
 
-echo 'Assign and execute task to user william.jobs<br>';
-$williamJobs = $bonitaUser->getByUserName('william.jobs');
-$bonitaTask = new BonitaHumanTask();
-//$williamTask = $bonitaTask->getPendingTasks($williamJobs->id);
-//$bonitaTask->assignTaskToUser($williamTask[0]->id, $williamJobs->id);
-$williamTask = $bonitaTask->getAssignedTasks($williamJobs->id);
-//var_dump($williamTask);
-$bonitaTask->executeTask($williamTask[0]->id, $williamJobs->id, array(array('name' => 'aprovado', 'type' => 'bool', 'value' => 'true'), array('name' => 'obs', 'type' => 'string', 'value' => 'teste')));
-echo('<br>-------------------------------------------------------------------------------<br>');
 
-//$bonitaProcess = new BonitaProcess();
-//$bonitaCase = new BonitaCase();
-//$walterBates = $bonitaUser->getByUserName('walter.bates');
-//var_dump($bonitaProcess->getProcessList());
-//var_dump($walterBates);
-//var_dump($bonitaCase->createCase(5427687883454163503, $walterBates->id));
+$processes = $bonitaProcess->getProcessList();
+//$bonitaCase->createCase($processes[0]->id, $user->id);
+
+echo "Pending tasks to user {$username}<br>";
+$bonitaTask = new BonitaHumanTask();
+$pendingTask = $bonitaTask->getPendingTasks($user->id);
+var_dump($pendingTask);
+//$bonitaTask->assignTaskToUser($userTask[0]->id, $user->id);
+echo('<br>-------------------------------------------------------------------------------<br>');
+echo "Assigned tasks to user {$username}<br>";
+$assignedTask = $bonitaTask->getAssignedTasks($user->id);
+var_dump($assignedTask);
+//$bonitaTask->executeTask($userTask[0]->id, $user->id, array(array('name' => 'aprovado', 'type' => 'bool', 'value' => 'true'), array('name' => 'obs', 'type' => 'string', 'value' => 'teste')));
+echo('<br>-------------------------------------------------------------------------------<br>');

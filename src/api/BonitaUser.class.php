@@ -44,4 +44,33 @@ class BonitaUser extends BonitaRestAPI {
         return $user[0];
     }
     
+    public function create($userName, $password, $firstName, $lastName, $managerId = NULL) {
+        $data = array(
+            "userName" => "{$userName}",
+            "password" => "{$password}",
+            "password_confirm" => "{$password}",
+            "icon" => "",
+            "firstname" => "{$firstName}",
+            "lastname" => "{$lastName}",        
+            "title" => "",
+            "job_title" => "",
+            "manager_id" => "{$managerId}",
+            "enabled" => "true"
+        );
+        return parent::post($data);
+    }
+    
+    public function delete($id) {
+        $user = $this->get($id);
+        if (is_null($user)) {
+            return new Exception("The user {$id} does not exists");
+        }
+        
+        try {
+            $delete = parent::delete($id);
+            return TRUE;
+        } catch (Exception $e) {
+            return $e;
+        }
+    }
 }
