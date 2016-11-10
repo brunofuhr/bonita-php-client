@@ -8,17 +8,15 @@ try {
         define('BONITA_API_URL', BONITA_SERVER_URL . "{$config['server']['api_dir']}/");
         define('BONITA_USERNAME', $config['user']['username']);
         define('BONITA_PASSWORD', $config['user']['password']);
-        
+
         // Includes the necessary files to load the library
         includeFiles(__DIR__ . '/service/');
-        includeFiles(__DIR__ . '/api/');        
+        includeFiles(__DIR__ . '/api/');
     }
-    
+
 } catch (Exception $e) {
     die($e->getMessage());
 }
-
-
 
 function includeFiles($path) {
     $dirsIterator = new RecursiveTreeIterator(new RecursiveDirectoryIterator($path));

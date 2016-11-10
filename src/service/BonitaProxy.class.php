@@ -6,19 +6,19 @@ class BonitaProxy {
      * @var String URL where Bonita BPM is running
      */
     private $bonitaURL;
-    
+
     /**
      * @var String Username of a administrator user to connect with Bonita BPM and do requisitions
      */
     private $bonitaUserName;
-    
+
     /**
      * @var String Password of the administrator user
      */
     private $bonitaPassword;
-    
+
     /**
-     * 
+     *
      * @param String $url
      * @param String $userName
      * @param String $password
@@ -85,7 +85,7 @@ class BonitaProxy {
         }
 
         $data = json_encode($post_array);
-        
+
         curl_setopt($curlHandler, CURLOPT_URL, $routeCURL);
         curl_setopt($curlHandler, CURLOPT_CUSTOMREQUEST, "PUT");
         curl_setopt($curlHandler, CURLOPT_POSTFIELDS, $data);
@@ -99,7 +99,7 @@ class BonitaProxy {
         curl_close($curlHandler);
         return $response;
     }
-    
+
     public function executeCURLDELETEaction($routeCURL, $post_array, $login = true) {
         $curlHandler = curl_init($routeCURL);
 
@@ -108,7 +108,7 @@ class BonitaProxy {
         }
 
         $data = json_encode($post_array);
-        
+
         curl_setopt($curlHandler, CURLOPT_URL, $routeCURL);
         curl_setopt($curlHandler, CURLOPT_CUSTOMREQUEST, "DELETE");
         curl_setopt($curlHandler, CURLOPT_POSTFIELDS, $data);
