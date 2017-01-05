@@ -38,7 +38,18 @@ class BonitaProxy {
         curl_setopt($curlHandler, CURLOPT_POSTFIELDS, $dataCURL['urlifyedstring']);
         curl_setopt($curlHandler, CURLOPT_COOKIEJAR, 'cookie.txt');
         curl_setopt($curlHandler, CURLOPT_RETURNTRANSFER, true);
+        // if https
+        if ( strtolower(substr($this->getBonitaURL(), 0, 5)) == 'https' ) {
+            curl_setopt($curlHandler, CURLOPT_SSLVERSION, 'all');
+            curl_setopt($curlHandler, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($curlHandler, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($curlHandler, CURLOPT_PORT, 443);
+        }
+
         $auth = curl_exec($curlHandler);
+        if ( curl_errno($curlHandler) ) {
+            throw new Exception("There was an error while connecting to Bonita server({$this->getBonitaURL()}). CURL ERROR " . curl_errno($curlHandler) . ":" . curl_error($curlHandler));
+        }
 
         return $auth;
     }
@@ -50,6 +61,7 @@ class BonitaProxy {
         curl_setopt($curlHandler, CURLOPT_POST, 0);
         $content = curl_exec($curlHandler);
         curl_close($curlHandler);
+
         return $content;
     }
 
