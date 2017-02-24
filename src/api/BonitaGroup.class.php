@@ -33,4 +33,19 @@ class BonitaGroup extends BonitaRestAPI {
         return parent::post($data);
     }
 
+    public function update($id, $name, $displayName = NULL, $description = NULL, $parentGroupId = NULL) {
+        $data = array(
+            "name" => "{$name}",
+            "displayName" => "{$displayName}",
+            "description" => "{$description}",
+            "parent_group_id" => "{$parentGroupId}"
+        );
+
+        parent::put($id, $data);
+        return $this->getGroup($id);
+    }
+
+    public function delete($id) {
+        return parent::delete($id);
+    }
 }

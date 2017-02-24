@@ -18,25 +18,27 @@ try {
     die($e->getMessage());
 }
 
-function includeFiles($path) {
-    $dirsIterator = new RecursiveTreeIterator(new RecursiveDirectoryIterator($path));
-    $dirs = array();
+if ( !function_exists('includeFiles') ) {
+    function includeFiles($path) {
+        $dirsIterator = new RecursiveTreeIterator(new RecursiveDirectoryIterator($path));
+        $dirs = array();
 
-    foreach ($dirsIterator as $dir => $dirTree) {
-        if (is_dir($dir)) {
-            $dirs[] = $dir;
-        }
-    }
-
-    foreach ($dirs as $dir) {
-        if (substr_count($dir, '..') > 0) {
-            continue;
+        foreach ($dirsIterator as $dir => $dirTree) {
+            if (is_dir($dir)) {
+                $dirs[] = $dir;
+            }
         }
 
-        $directory = dir($dir);
-        while ($file = $directory->read()) {
-            if (substr($file, -3) == 'php') {
-                require_once $dir . '/' . $file;
+        foreach ($dirs as $dir) {
+            if (substr_count($dir, '..') > 0) {
+                continue;
+            }
+
+            $directory = dir($dir);
+            while ($file = $directory->read()) {
+                if (substr($file, -3) == 'php') {
+                    require_once $dir . '/' . $file;
+                }
             }
         }
     }
