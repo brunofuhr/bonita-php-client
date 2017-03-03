@@ -1,23 +1,5 @@
 <?php
 
-// Load config
-try {
-    $config = parse_ini_file(__DIR__ . '/config.ini', true);
-    if (is_array($config)) {
-        define('BONITA_SERVER_URL', "{$config['server']['protocol']}://{$config['server']['host']}:{$config['server']['port']}/{$config['server']['bonita_dir']}/");
-        define('BONITA_API_URL', BONITA_SERVER_URL . "{$config['server']['api_dir']}/");
-        define('BONITA_USERNAME', $config['user']['username']);
-        define('BONITA_PASSWORD', $config['user']['password']);
-
-        // Includes the necessary files to load the library
-        includeFiles(__DIR__ . '/service/');
-        includeFiles(__DIR__ . '/api/');
-    }
-
-} catch (Exception $e) {
-    die($e->getMessage());
-}
-
 if ( !function_exists('includeFiles') ) {
     function includeFiles($path) {
         $dirsIterator = new RecursiveTreeIterator(new RecursiveDirectoryIterator($path));
@@ -42,4 +24,22 @@ if ( !function_exists('includeFiles') ) {
             }
         }
     }
+}
+
+// Load config
+try {
+    $config = parse_ini_file(__DIR__ . '/config.ini', true);
+    if (is_array($config)) {
+        define('BONITA_SERVER_URL', "{$config['server']['protocol']}://{$config['server']['host']}:{$config['server']['port']}/{$config['server']['bonita_dir']}/");
+        define('BONITA_API_URL', BONITA_SERVER_URL . "{$config['server']['api_dir']}/");
+        define('BONITA_USERNAME', $config['user']['username']);
+        define('BONITA_PASSWORD', $config['user']['password']);
+
+        // Includes the necessary files to load the library
+        includeFiles(__DIR__ . '/service/');
+        includeFiles(__DIR__ . '/api/');
+    }
+
+} catch (Exception $e) {
+    die($e->getMessage());
 }

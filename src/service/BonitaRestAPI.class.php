@@ -62,7 +62,7 @@ class BonitaRestAPI {
         $proxy = new BonitaProxy(BONITA_SERVER_URL, BONITA_USERNAME, BONITA_PASSWORD);
         $endpoint = $this->getEndpoint();
         $endpoint .= "/{$id}";
-        return json_decode($proxy->executeCURLDELETEaction($endpoint, $data));
+        return json_decode($proxy->executeCURLDELETEaction($endpoint, null));
     }
 
     protected function post($data) {

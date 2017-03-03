@@ -29,7 +29,22 @@ class BonitaRole extends BonitaRestAPI {
             "displayName" => "{$displayName}",
             "description" => "{$description}"
         );
-            return parent::post($data);
+        return parent::post($data);
+    }
+    
+    public function update($id, $name, $displayName, $description) {
+        $data = array(
+            "name" => "{$name}",
+            "displayName" => "{$displayName}",
+            "description" => "{$description}"
+        );
+
+        parent::put($id, $data);
+        return $this->getRole($id);
+    }
+    
+    public function delete($id) {
+        return parent::delete($id);
     }
     
 }

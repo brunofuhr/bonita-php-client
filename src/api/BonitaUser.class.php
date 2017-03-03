@@ -59,6 +59,22 @@ class BonitaUser extends BonitaRestAPI {
         );
         return parent::post($data);
     }
+    
+    public function update($id, $userName, $password, $firstName, $lastName, $managerId = NULL) {
+        $data = array(
+            "userName" => "{$userName}",
+            "password" => "{$password}",
+            "password_confirm" => "{$password}",
+            "icon" => "",
+            "firstname" => "{$firstName}",
+            "lastname" => "{$lastName}",
+            "title" => "",
+            "job_title" => "",
+            "manager_id" => "{$managerId}",
+            "enabled" => "true"
+        );
+        return parent::put($id, $data);
+    }
 
     public function delete($id) {
         $user = $this->get($id);
@@ -72,5 +88,10 @@ class BonitaUser extends BonitaRestAPI {
         } catch (Exception $e) {
             return $e;
         }
+    }
+    
+    public function disableUser($id) {
+        $data = array("enabled" => "false");
+        return parent::put($id, $data);        
     }
 }
