@@ -44,7 +44,7 @@ class BonitaUser extends BonitaRestAPI {
         return $user[0];
     }
 
-    public function create($userName, $password, $firstName, $lastName, $managerId = NULL) {
+    public function create($userName, $password, $firstName, $lastName = '', $managerId = NULL) {
         $data = array(
             "userName" => "{$userName}",
             "password" => "{$password}",
