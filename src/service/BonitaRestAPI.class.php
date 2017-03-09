@@ -7,6 +7,7 @@ class BonitaRestAPI {
     protected $endpoint;
     protected $filters;
 
+    const STATE_STARTED = 'started';
     const STATE_READY = 'ready';
     const STATE_SKIPPED = 'skipped';
     const STATE_COMPLETED = 'completed';
