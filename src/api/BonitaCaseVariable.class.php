@@ -32,11 +32,13 @@ class BonitaCaseVariable extends BonitaRestAPI {
     public function existsVariableInCase($caseId, $variableName) {
         $existVariable = FALSE;
         $variables = $this->getVariablesList($caseId);
-        var_dump($variables);
-        foreach ($variables as $variable) {
-            if ($variable->name == $variableName) {
-                $existVariable = TRUE;
-                break;
+        
+        if ( count($variables) > 0 ) {
+            foreach ($variables as $variable) {
+                if ($variable->name == $variableName) {
+                    $existVariable = TRUE;
+                    break;
+                }
             }
         }
         return $existVariable;
