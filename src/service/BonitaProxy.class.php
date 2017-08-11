@@ -16,6 +16,12 @@ class BonitaProxy {
      * @var String Password of the administrator user
      */
     private $bonitaPassword;
+    
+    /**
+     *
+     * @var String API Token
+     */
+    private $apiToken;
 
     /**
      *
@@ -36,7 +42,7 @@ class BonitaProxy {
         curl_setopt($curlHandler, CURLOPT_URL, "{$this->bonitaURL}/loginservice");
         curl_setopt($curlHandler, CURLOPT_POST, $dataCURL['count']);
         curl_setopt($curlHandler, CURLOPT_POSTFIELDS, $dataCURL['urlifyedstring']);
-        curl_setopt($curlHandler, CURLOPT_COOKIEJAR, 'cookie.txt');
+        curl_setopt($curlHandler, CURLOPT_COOKIEJAR, 'bonita_bpm_cookie.txt');
         curl_setopt($curlHandler, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curlHandler, CURLOPT_TIMEOUT, 20);
         // if https
@@ -56,7 +62,18 @@ class BonitaProxy {
         if ( curl_errno($curlHandler) ) {
             throw new Exception("There was an error while connecting to Bonita server({$this->getBonitaURL()}). CURL ERROR " . curl_errno($curlHandler) . ":" . curl_error($curlHandler));
         }
-
+        
+        preg_match_all('/^Set-Cookie:\s*([^;]*)/mi', $auth, $matches);
+        $cookies = array();
+        foreach($matches[1] as $item) {
+            parse_str($item, $cookie);
+            $cookies = array_merge($cookies, $cookie);
+        }
+        
+        if ( count($cookies) > 0 ) {
+            $this->setApiToken($cookies['X-Bonita-API-Token']);
+        }
+        
         return $auth;
     }
 
@@ -65,6 +82,9 @@ class BonitaProxy {
         $this->commonAuthenticate($curlHandler);
         curl_setopt($curlHandler, CURLOPT_URL, $routeCURL);
         curl_setopt($curlHandler, CURLOPT_POST, 0);
+        curl_setopt($curlHandler, CURLOPT_HTTPHEADER, array(
+            'X-Bonita-API-Token: ' . $this->getApiToken()
+        ));
         $content = curl_exec($curlHandler);
         curl_close($curlHandler);
 
@@ -73,6 +93,7 @@ class BonitaProxy {
 
     public function executeCURLPOSTaction($routeCURL, $post_array, $login = true) {
         $curlHandler = curl_init($routeCURL);
+        curl_setopt($curlHandler, CURLOPT_HEADER, 1);
 
         if ($login) {
             $this->commonAuthenticate($curlHandler);
@@ -83,20 +104,23 @@ class BonitaProxy {
         curl_setopt($curlHandler, CURLOPT_URL, $routeCURL);
         curl_setopt($curlHandler, CURLOPT_POST, true);
         curl_setopt($curlHandler, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($curlHandler, CURLOPT_HEADER, 0);
         curl_setopt($curlHandler, CURLOPT_POSTFIELDS, $data);
         curl_setopt($curlHandler, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curlHandler, CURLOPT_HTTPHEADER, array(
             'Content-Type: application/json',
-            'Content-Length: ' . strlen($data))
+            'Content-Length: ' . strlen($data),
+            'X-Bonita-API-Token: ' . $this->getApiToken())
         );
         $response = curl_exec($curlHandler);
-
+        
         curl_close($curlHandler);
         return $response;
     }
 
     public function executeCURLPUTaction($routeCURL, $post_array, $login = true) {
         $curlHandler = curl_init($routeCURL);
+        curl_setopt($curlHandler, CURLOPT_HEADER, 1);
 
         if ($login) {
             $this->commonAuthenticate($curlHandler);
@@ -106,11 +130,13 @@ class BonitaProxy {
 
         curl_setopt($curlHandler, CURLOPT_URL, $routeCURL);
         curl_setopt($curlHandler, CURLOPT_CUSTOMREQUEST, "PUT");
+        curl_setopt($curlHandler, CURLOPT_HEADER, 0);
         curl_setopt($curlHandler, CURLOPT_POSTFIELDS, $data);
         curl_setopt($curlHandler, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curlHandler, CURLOPT_HTTPHEADER, array(
             'Content-Type: application/json',
-            'Content-Length: ' . strlen($data))
+            'Content-Length: ' . strlen($data),
+            'X-Bonita-API-Token: ' . $this->getApiToken())
         );
         $response = curl_exec($curlHandler);
 
@@ -120,6 +146,7 @@ class BonitaProxy {
 
     public function executeCURLDELETEaction($routeCURL, $post_array, $login = true) {
         $curlHandler = curl_init($routeCURL);
+        curl_setopt($curlHandler, CURLOPT_HEADER, 1);
 
         if ($login) {
             $this->commonAuthenticate($curlHandler);
@@ -129,14 +156,16 @@ class BonitaProxy {
 
         curl_setopt($curlHandler, CURLOPT_URL, $routeCURL);
         curl_setopt($curlHandler, CURLOPT_CUSTOMREQUEST, "DELETE");
+        curl_setopt($curlHandler, CURLOPT_HEADER, 0);
         curl_setopt($curlHandler, CURLOPT_POSTFIELDS, $data);
         curl_setopt($curlHandler, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curlHandler, CURLOPT_HTTPHEADER, array(
             'Content-Type: application/json',
-            'Content-Length: ' . strlen($data))
+            'Content-Length: ' . strlen($data),
+            'X-Bonita-API-Token: ' . $this->getApiToken())
         );
         $response = curl_exec($curlHandler);
-
+        
         curl_close($curlHandler);
         return $response;
     }
@@ -180,4 +209,11 @@ class BonitaProxy {
         $this->bonitaURL = $bonitaURL;
     }
 
+    public function getApiToken() {
+        return $this->apiToken;
+    }
+
+    public function setApiToken(String $apiToken) {
+        $this->apiToken = $apiToken;
+    }
 }
