@@ -12,6 +12,10 @@ class BonitaProcess extends BonitaRestAPI {
         }
         return parent::get($id);
     }
+    
+    public function deployProcess($filename) {
+        return parent::post(array('fileupload' => $filename));
+    }
 
     public function getProcessList() {
         return parent::get();
