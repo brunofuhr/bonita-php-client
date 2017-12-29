@@ -79,5 +79,17 @@ class BonitaRestAPI {
         }
         return $query;
     }
+    
+    protected function getBooleanValue($value)
+    {
+        $trues = array( 't', '1', 'true', 'True' );
+
+        if ( is_bool($value) )
+        {
+            return $value;
+        }
+
+        return in_array($value, $trues);
+    }
 
 }

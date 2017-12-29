@@ -20,7 +20,23 @@ class BonitaCaseVariable extends BonitaRestAPI {
         if (!$this->existsVariableInCase($caseId, $variableName)) {
             return FALSE;
         }
-        $data = array('type' => $this->getJavaTypeClassName($variableType), 'value' => $variableValue);
+        
+        $javaTypeClassName = $this->getJavaTypeClassName($variableType);
+        if ( $javaTypeClassName == 'java.lang.Boolean' && $this->getBooleanValue($variableValue) ) {
+            $variableValue = 'true';
+        }
+        
+        if ( $javaTypeClassName == 'java.util.Date' ) {
+            if ( strlen($variableValue) == 10 ) {
+                // BONITA DATE CONVERTER: SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", DateFormatSymbols.getInstance(Locale.ENGLISH));            
+                $dateObj = DateTime::createFromFormat("d/m/Y", $variableValue);
+                $variableValue = substr_replace($dateObj->format('D M d 00:00:00 Y'), 'GMT ', 20, 0);
+            } else {
+                $variableValue = NULL;
+            }
+        }
+        
+        $data = array('type' => $javaTypeClassName, 'value' => $variableValue);
         return parent::put("{$caseId}/{$variableName}", $data);
     }
 
