@@ -31,6 +31,9 @@ class BonitaCaseVariable extends BonitaRestAPI {
                 // BONITA DATE CONVERTER: SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", DateFormatSymbols.getInstance(Locale.ENGLISH));            
                 $dateObj = DateTime::createFromFormat("d/m/Y", $variableValue);
                 $variableValue = substr_replace($dateObj->format('D M d 00:00:00 Y'), 'GMT ', 20, 0);
+            } elseif ( strlen($variableValue) == 19 ) {
+                $dateObj = DateTime::createFromFormat("d/m/Y H:i:s", $variableValue);
+                $variableValue = substr_replace($dateObj->format('D M d H:i:s Y'), 'GMT ', 20, 0);
             } else {
                 $variableValue = NULL;
             }
